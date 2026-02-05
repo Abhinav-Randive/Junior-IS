@@ -40,6 +40,13 @@ Predictions will then inform a strategy layer that controls order placement, agg
 The execution simulator will model realistic trading constraints, including queue position, partial fills, and transaction costs. 
 Instrumentation will be built into every stage of the pipeline to measure end-to-end latency, component-level delays, and tail latency behavior under load. 
 This instrumentation enables systematic experimentation on how changes in model complexity, feature computation cost, or architectural design affect overall system performance.
+
+This project is worth accomplishing because it bridges the gap between predictive modeling and systems engineering in algorithmic trading. By treating execution and latency as first-class research concerns, the project aligns closely with real-world financial engineering practice while remaining firmly grounded in computer science. 
+The resulting system will serve both as a research platform for controlled experimentation and as a demonstration of advanced software engineering skills in performance-critical environments.
+When implemented, the system’s high-level logic flow will illustrate how market data enters the system, how predictions are generated in real time, how trading decisions are made, and how orders interact with the simulated market. 
+This flow will be represented as a logic diagram (Figure~\ref{fig:method}) showing the interaction between the data feed, prediction module, strategy logic, and execution engine.
+
+
 \begin{figure}[h]
 \begin{center}
 \includegraphics[scale=0.7]{methodology.png}
