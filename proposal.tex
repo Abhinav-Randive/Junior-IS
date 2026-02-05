@@ -1,5 +1,5 @@
 % This is a template for your written document.
-%
+
 % To compile using latexmk on the command line, run the following: 
 % latexmk -pdf main.tex
 
@@ -47,7 +47,7 @@ This instrumentation enables systematic experimentation on how changes in model 
 This project is worth accomplishing because it bridges the gap between predictive modeling and systems engineering in algorithmic trading. By treating execution and latency as first-class research concerns, the project aligns closely with real-world financial engineering practice while remaining firmly grounded in computer science. 
 The resulting system will serve both as a research platform for controlled experimentation and as a demonstration of advanced software engineering skills in performance-critical environments.
 When implemented, the system’s high-level logic flow will illustrate how market data enters the system, how predictions are generated in real time, how trading decisions are made, and how orders interact with the simulated market. 
-This flow will be represented as a logic diagram (Figure~\ref{fig:architecture}) showing the interaction between the data feed, prediction module, strategy logic, and execution engine.
+This flow will be represented as a logic diagram (Figure~\ref{fig:model}) showing the interaction between the data feed, prediction module, strategy logic, and execution engine.
 
 
 \begin{figure}[h]
@@ -84,9 +84,36 @@ This flow will be represented as a logic diagram (Figure~\ref{fig:architecture})
 
 \end{tikzpicture}
 \caption{Event-driven Architecture Model}
-\label{fig:architecture}
+\label{fig:model}
 \end{figure}
 
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[
+  node distance=1.2cm,
+  box/.style={
+    draw,
+    rectangle,
+    align=center,
+    minimum width=5cm,
+    minimum height=0.9cm
+  },
+  arrow/.style={->, thick}
+]
+
+\node[box] (bid) {Bid Orders \\ Price--Time Priority};
+\node[box, right=of bid, xshift=2cm] (ask) {Ask Orders \\ Price--Time Priority};
+\node[box, below=of bid, xshift=3.5cm] (match) {Order Matching Engine};
+\node[box, below=of match] (fills) {Execution Outcomes \\ (Fills, Slippage)};
+
+\draw[arrow] (bid) -- (match);
+\draw[arrow] (ask) -- (match);
+\draw[arrow] (match) -- (fills);
+
+\end{tikzpicture}
+\caption{Structure of the simulated limit order book}
+\label{fig:limbook}
+\end{figure}
 
 
 \newpage
