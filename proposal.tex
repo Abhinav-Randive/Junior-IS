@@ -8,6 +8,9 @@
 \usepackage{graphicx} % used for includegraphics
 \singlespace
 \usepackage[left=1in,right=1in,top=1in,bottom=1in]{geometry}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning}
+
 
 \title{\textbf{Architectural Tradeoffs in Low-Latency Algorithmic Trading with Predictive Signals}}
 \author{Abhinav Randive}
@@ -44,16 +47,10 @@ This instrumentation enables systematic experimentation on how changes in model 
 This project is worth accomplishing because it bridges the gap between predictive modeling and systems engineering in algorithmic trading. By treating execution and latency as first-class research concerns, the project aligns closely with real-world financial engineering practice while remaining firmly grounded in computer science. 
 The resulting system will serve both as a research platform for controlled experimentation and as a demonstration of advanced software engineering skills in performance-critical environments.
 When implemented, the system’s high-level logic flow will illustrate how market data enters the system, how predictions are generated in real time, how trading decisions are made, and how orders interact with the simulated market. 
-This flow will be represented as a logic diagram (Figure~\ref{fig:method}) showing the interaction between the data feed, prediction module, strategy logic, and execution engine.
+This flow will be represented as a logic diagram (Figure~\ref{fig:Fig 1}) showing the interaction between the data feed, prediction module, strategy logic, and execution engine.
 
 
-\begin{figure}[h]
-\begin{center}
-\includegraphics[scale=0.7]{Fig 1.png}
-\caption{Archie}
-\label{fig:Event-Driven Architecture of the Trading System}       % Give a unique label
-\end{center}
-\end{figure}
+
 
 
 \newpage
