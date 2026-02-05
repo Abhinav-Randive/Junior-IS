@@ -47,9 +47,45 @@ This instrumentation enables systematic experimentation on how changes in model 
 This project is worth accomplishing because it bridges the gap between predictive modeling and systems engineering in algorithmic trading. By treating execution and latency as first-class research concerns, the project aligns closely with real-world financial engineering practice while remaining firmly grounded in computer science. 
 The resulting system will serve both as a research platform for controlled experimentation and as a demonstration of advanced software engineering skills in performance-critical environments.
 When implemented, the system’s high-level logic flow will illustrate how market data enters the system, how predictions are generated in real time, how trading decisions are made, and how orders interact with the simulated market. 
-This flow will be represented as a logic diagram (Figure~\ref{fig:Fig 1}) showing the interaction between the data feed, prediction module, strategy logic, and execution engine.
+This flow will be represented as a logic diagram (Figure~\ref{fig:architecture}) showing the interaction between the data feed, prediction module, strategy logic, and execution engine.
 
 
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[
+  node distance=1.15cm,
+  box/.style={
+    draw,
+    rectangle,
+    rounded corners,
+    align=center,
+    minimum width=6.8cm,
+    minimum height=0.9cm
+  },
+  arrow/.style={->, thick}
+]
+
+\node[box] (data) {Historical Market Data (User Input)};
+\node[box, below=of data] (event) {Event Queue and Dispatcher};
+\node[box, below=of event] (features) {Feature Extraction (Market Microstructure)};
+\node[box, below=of features] (model) {Predictive Model};
+\node[box, below=of model] (strategy) {Strategy Logic};
+\node[box, below=of strategy] (execution) {Order Manager and Execution Simulator};
+\node[box, below=of execution] (lob) {Limit Order Book};
+\node[box, below=of lob] (output) {Metrics and Logs (System Output)};
+
+\draw[arrow] (data) -- (event);
+\draw[arrow] (event) -- (features);
+\draw[arrow] (features) -- (model);
+\draw[arrow] (model) -- (strategy);
+\draw[arrow] (strategy) -- (execution);
+\draw[arrow] (execution) -- (lob);
+\draw[arrow] (lob) -- (output);
+
+\end{tikzpicture}
+\caption{Event-driven Architecture Model}
+\label{fig:architecture}
+\end{figure}
 
 
 
