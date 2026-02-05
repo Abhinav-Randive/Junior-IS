@@ -16,7 +16,14 @@
 
 \maketitle
 
-Modern financial markets are dominated by firms that employ algorithmic trading systems that operate under strict real-time constraints. In particular, high-frequency and low-latency trading systems rely heavily on sophisticated software architectures that integrate market data processing, predictive modelling, and order execution within microsecond. While predictive models for financial markets have been widely studied, existing research emphasizes that prediction accuracy alone is insufficient; execution latency, system design, and market microstructure effects more often than not determine whether a predictive edge can be realized in practice~\cite{aldridgeHFT, carteaMicrostructure}. This project proposes the design and implementation of a low-latency algorithmic trading system that integrates short-term predictive models with an event-driven execution engine, allowing for a quantitative study of the trade-offs between prediction accuracy, latency, and execution quality.
+Modern financial markets are dominated by firms that employ algorithmic trading systems that operate under strict real-time constraints. 
+In particular, high-frequency and low-latency trading systems rely heavily on sophisticated software architectures that integrate market data processing, predictive modelling, and order execution within microsecond. 
+While predictive models for financial markets have been widely studied, existing research emphasizes that prediction accuracy alone is insufficient; execution latency, system design, and market microstructure effects more often than not determine whether a predictive edge can be realized in practice~\cite{aldridgeHFT, carteaMicrostructure}. 
+This project proposes the design and implementation of a low-latency algorithmic trading system that integrates short-term predictive models with an event-driven execution engine, allowing for a quantitative study of the trade-offs between prediction accuracy, latency, and execution quality.
+
+Prior work in algorithmic trading highlights the importance of market microstructure, including limit order book dynamics, queue position, and adverse selection~\cite{harrisTrading}. 
+At the same time, research in high-performance systems demonstrates that architectural decisions such as concurrency models, memory layout, and event handling strategies can significantly impact tail latency and throughput~\cite{stonebrakerLatency}. 
+Despite this, many academic trading studies abstract away execution mechanics or rely on unrealistic assumptions about fills and transaction costs. This project addresses that gap by focusing explicitly on the software infrastructure required to deploy prediction-aware trading strategies under realistic execution constraints.
 
 \begin{figure}[h]
 \begin{center}
