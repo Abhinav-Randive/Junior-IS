@@ -25,6 +25,21 @@ Prior work in algorithmic trading highlights the importance of market microstruc
 At the same time, research in high-performance systems demonstrates that architectural decisions such as concurrency models, memory layout, and event handling strategies can significantly impact tail latency and throughput~\cite{stonebrakerLatency}. 
 Despite this, many academic trading studies abstract away execution mechanics or rely on unrealistic assumptions about fills and transaction costs. This project addresses that gap by focusing explicitly on the software infrastructure required to deploy prediction-aware trading strategies under realistic execution constraints.
 
+
+The primary goal of this project is to build a modular, event-driven trading system capable of replaying historical market data, generating real-time predictions from order book features, and executing trades within a simulated limit order book. 
+The system will not be evaluated primarily on profitability, but rather on engineering-centric metrics such as latency distributions, order fill rates, slippage, and sensitivity to execution delays. 
+By doing so, the project aims to demonstrate how even accurate predictive signals can lose effectiveness when system latency or execution costs are too high, a phenomenon well documented in both academic and industry research~\cite{bouchaudTrades}.
+
+
+The software will be structured as a multi-component system. At its core will be a limit order book implementation supporting limit orders, market orders, and cancellations using price–time priority. 
+An event-driven engine will process timestamped market data events and route them through the system deterministically, ensuring reproducible experiments and eliminating look-ahead bias. A feature extraction module will compute microstructure-based features such as order book imbalance, spread, and short-term order flow statistics. 
+These features will feed into lightweight predictive models, such as logistic regression or linear classifiers, designed to predict short-horizon price movements or volatility changes. 
+Predictions will then inform a strategy layer that controls order placement, aggressiveness, and cancellation behavior.
+
+
+The execution simulator will model realistic trading constraints, including queue position, partial fills, and transaction costs. 
+Instrumentation will be built into every stage of the pipeline to measure end-to-end latency, component-level delays, and tail latency behavior under load. 
+This instrumentation enables systematic experimentation on how changes in model complexity, feature computation cost, or architectural design affect overall system performance.
 \begin{figure}[h]
 \begin{center}
 \includegraphics[scale=0.7]{methodology.png}
