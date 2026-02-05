@@ -61,10 +61,21 @@ This flow will be represented as a logic diagram (Figure~\ref{fig:method}) showi
 A planned feature list for the software system is outlined below. Features are listed in the intended order of implementation.
 \begin{itemize}
 	
-	\item Default picture display on web application.
-	\item On a button-click, user can separate the image into foreground and background.
-	\item User can select a picture from their desktop.
-	\item Selected picture displays on the web application.
+	\item Historical market data ingestion and deterministic replay engine.
+	\item Event-driven processing loop with timestamped events.
+	\item Core limit order book implementation with price--time priority.
+	\item Support for limit orders, market orders, and order cancellations.
+	\item Market microstructure feature extraction (spread, depth, imbalance).
+	\item Baseline predictive model for short-horizon price direction.
+	\item Strategy module that adjusts order placement based on predictions.
+	\item Execution simulator modeling queue position and partial fills.
+	\item Transaction cost and slippage modeling.
+	\item End-to-end latency measurement and profiling infrastructure.
+	\item Visualization of order book state and latency distributions.
+	\item Parameterized experiments comparing prediction accuracy vs latency.
+	\item Stretch goal: parallelized or lock-free event queue implementation.
+	\item Stretch goal: comparison of multiple prediction models under latency constraints.
+
 \end{itemize}
 
 
