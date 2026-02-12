@@ -13,3 +13,8 @@ A brief description.
 | Limit, market, and cancel order support | Week 2 | Basic execution functionality |
 | Execution simulator (partial fills, queue position) | Week 3 | Realistic execution behavior |
 | Market microstructure feature extraction | Week 4 | Spread, depth, imbalance metrics |
+
+| Baseline predictive model (logostic regression)| Week 5 | Firat prediction integration |
+| Strategy model using predictions | Week 6 | Prediction-informed decisions |
+| Latency instrumentation and logging | Week 7 | Measure component delays |
+
