@@ -6,10 +6,10 @@ A brief description.
 
 | **Feature** | **Due date** | **Notes**|
 | --------- | ------------ | -- |
-| Market data ingestion and replay | Week 1 | Loading historical data and replay events in timestamp order |
-| Event-driven processing loop with dispatcher | Week 1 | Core infrastructure milestone |
-| Core limit order book implementation | Week 2 | Maintain bid/ask structures |
-| Limit, market, and cancel order support | Week 2 | Basic execution functionality |
+| [Market data ingestion and replay](https://github.com/Abhinav-Randive/Junior-IS/issues/1#issue-3929584763) | Week 1 | Loading historical data and replay events in timestamp order |
+| [Event-driven processing loop with dispatcher](https://github.com/Abhinav-Randive/Junior-IS/issues/2#issue-3929588434) | Week 1 | Core infrastructure milestone |
+| [Core limit order book implementation](https://github.com/Abhinav-Randive/Junior-IS/issues/3#issue-3929589777) | Week 2 | Maintain bid/ask structures |
+| [Limit, market, and cancel order support ](https://github.com/Abhinav-Randive/Junior-IS/issues/4#issue-3929591905)| Week 2 | Basic execution functionality |
 | Execution simulator (partial fills, queue position) | Week 3 | Realistic execution behavior |
 | Market microstructure feature extraction | Week 4 | Spread, depth, imbalance metrics |
 | Baseline predictive model (logostic regression)| Week 5 | Firat prediction integration |
