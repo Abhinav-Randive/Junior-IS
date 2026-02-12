@@ -12,7 +12,7 @@ A brief description.
 | [Limit, market, and cancel order support ](https://github.com/Abhinav-Randive/Junior-IS/issues/4#issue-3929591905)| Week 2 | Basic execution functionality |
 | [Execution simulator (partial fills, queue position)](https://github.com/Abhinav-Randive/Junior-IS/issues/5#issue-3929595713) | Week 3 | Realistic execution behavior |
 | [Market microstructure feature extraction](https://github.com/Abhinav-Randive/Junior-IS/issues/6#issue-3929598515) | Week 4 | Spread, depth, imbalance metrics |
-| [Baseline predictive model](https://github.com/Abhinav-Randive/Junior-IS/issues/7#issue-3929599639) (logostic regression)| Week 5 | Firat prediction integration |
+| [Baseline predictive model](https://github.com/Abhinav-Randive/Junior-IS/issues/7#issue-3929599639) (logistic regression)| Week 5 | First prediction integration |
 | [Strategy model using predictions](https://github.com/Abhinav-Randive/Junior-IS/issues/8#issue-3929601119) | Week 6 | Prediction-informed decisions |
 | Latency instrumentation and logging | Week 7 | Measure component delays |
 | Visiualisation of latency distributions and execution metrics | Week 8 | Plotting for analysis
