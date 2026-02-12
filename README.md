@@ -18,3 +18,8 @@ A brief description.
 | Strategy model using predictions | Week 6 | Prediction-informed decisions |
 | Latency instrumentation and logging | Week 7 | Measure component delays |
 
+| Visiualisation of latency distributions and execution metrics | Week 8 | Plotting for analysis
+| Prediction Accuracy vs Latency | Week 9 | Main Question |
+| Final Documentation | Week 10 | Results (Hopefully!!!!) |
+
+
