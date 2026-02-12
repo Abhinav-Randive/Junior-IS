@@ -4,10 +4,10 @@ import os
 
 os.makedirs("data", exist_ok=True)
 
-print("Downloading data from Yahoo Finance...")
+print("Downloading S&P 500 Data")
 
 data = yf.download(
-    "AAPL",
+    "^GSPC",
     period="5d",
     interval="1m",
     progress=False
@@ -26,6 +26,6 @@ data.columns = ["timestamp", "price", "quantity"]
 
 data["timestamp"] = data["timestamp"].astype("int64") // 10**9
 
-data.to_csv("data/aapl.csv", index=False)
+data.to_csv("data/sp500.csv", index=False)
 
-print("Saved to data/aapl.csv")
+print("Saved to data/sp500.csv")
