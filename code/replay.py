@@ -9,6 +9,9 @@ class MarketReplay:
         return self.current_index < len(self.data)
     
     def next_event(self):
+        if not self.has_events():
+            return None
+
         row = self.data[self.current_index]
         self.current_index += 1
 
@@ -17,4 +20,3 @@ class MarketReplay:
             event_type=EventType.MARKET_UPDATE,
             payload=row
         )
-    
