@@ -29,6 +29,13 @@ This project begins by constructing the foundational infrastructre required for 
 Historical market data is downloaded using Yahoo Finance API through the yfinance Python library. The current implementation retrieves recent S\&P 500 index data at one minute intervals and stores the timestamped price and volume infomration in CSV format. The data preprocessing step flattens multi-index comuns, standadrizes column names, and converts timestamps to integer Unix time for consisten processing.
 This step insures reproductibikity and establishses a structures input fomrat for the simulatoin pipeline
 
+\subsection{Event Abstraction}
+To support an event-driven architecture, market data is abstracetd into discrete events. An \texttt{Event} data structure is defined with three fields: timestamp, event type and payload. Event types are enumerated to allow future extension for order submission, cancellation, and execution events.
+
+Each market update is represnted as a strcutured event object, enabling uniform handling of data within the system. This abstractino lays the groundwork for modular system components.
+
+\subsection{Deterministic Market Replay}
+
 
 \section{Results}
 An exemplary figure is shown in Figure~\ref{fig:dijkstra}. Any time a figure is used, it must have a capation and be directly referred to and discussed in the text.
