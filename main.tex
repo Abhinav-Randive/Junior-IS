@@ -23,7 +23,12 @@ The introduction will broadly introduce your topic, motivate it, and describe wh
 \section{Related Works}
 
 \section{Methodology}
-Dijkstra's algorithm was chosen for single-source shortest path computation on graphs with non-negative edge weights, following the implementation presented in CLRS~\cite{clrsAlgorithms}.
+This project begins by constructing the foundational infrastructre required for an event-driven trading system simulation. At this stage, the focus is on maket data ingestion and deterministic event replay.
+
+\subsection{Market Data Acquisition}
+Historical market data is downloaded using Yahoo Finance API through the yfinance Python library. The current implementation retrieves recent S\&P 500 index data at one minute intervals and stores the timestamped price and volume infomration in CSV format. The data preprocessing step flattens multi-index comuns, standadrizes column names, and converts timestamps to integer Unix time for consisten processing.
+This step insures reproductibikity and establishses a structures input fomrat for the simulatoin pipeline
+
 
 \section{Results}
 An exemplary figure is shown in Figure~\ref{fig:dijkstra}. Any time a figure is used, it must have a capation and be directly referred to and discussed in the text.
