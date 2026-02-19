@@ -9,7 +9,7 @@ def main():
     logger = Logger()
 
     # Load all replay events into dispatcher
-    while replay.has_next():
+    while replay.has_events():
         event = replay.next_event()
         dispatcher.push(event)
 
