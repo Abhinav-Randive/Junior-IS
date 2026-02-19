@@ -27,6 +27,7 @@ This project begins by constructing the foundational infrastructre required for 
 
 \subsection{Market Data Acquisition}
 Historical market data is downloaded using Yahoo Finance API through the yfinance Python library. The current implementation retrieves recent S\&P 500 index data at one minute intervals and stores the timestamped price and volume infomration in CSV format. The data preprocessing step flattens multi-index comuns, standadrizes column names, and converts timestamps to integer Unix time for consisten processing.
+
 This step insures reproductibikity and establishses a structures input fomrat for the simulatoin pipeline
 
 \subsection{Event Abstraction}
