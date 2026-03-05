@@ -38,32 +38,51 @@ By focusing on the infrastructure that connects predictive models with market ex
 
 
 \section{Related Works}
+Understanding algorithmic trading systems requires familiarity with the structure of modern financial markets. 
+Most electronic exchanges operate using a limit order book, where buy and sell orders are organized by price and time of submission. 
+When traders submit limit orders, they specify a price at which they are willing to buy or sell an asset. 
+These orders are placed into a queue and executed when matching orders arrive on the opposite side of the market.
+
+The concept of price-time priority plays a central role in these systems. 
+Orders with better prices are executed first, but when multiple orders exist at the same price level, they are executed in the order they were received. 
+This means that execution speed can significantly affect trading outcomes. Even small delays in order submission can cause a trader to lose queue position, reducing the likelihood of execution. 
+Harris provides a detailed overview of these market microstructure mechanisms and their implications for trading strategies~\cite{harrisTrading}.
 
 \section{Methodology}
 
-This project begins by constructing the foundational infrastructure required for an event-driven trading system simulation. At this stage, the focus is on market data ingestion and deterministic event replay, which form the basis for analyzing architectural tradeoffs in low-latency trading systems.
+This project begins by constructing the foundational infrastructure required for an event-driven trading system simulation. 
+At this stage, the focus is on market data ingestion and deterministic event replay, which form the basis for analyzing architectural tradeoffs in low-latency trading systems.
 
 \subsection{Market Data Acquisition}
 
-Historical market data is downloaded using the Yahoo Finance API through the \texttt{yfinance} Python library. The current implementation retrieves recent S\&P 500 index data at one-minute intervals and stores timestamped price and volume information in CSV format. The preprocessing step flattens multi-index columns, standardizes column names, and converts timestamps to integer Unix time for consistent processing.
+Historical market data is downloaded using the Yahoo Finance API through the \texttt{yfinance} Python library. 
+The current implementation retrieves recent S\&P 500 index data at one-minute intervals and stores timestamped price and volume information in CSV format. 
+The preprocessing step flattens multi-index columns, standardizes column names, and converts timestamps to integer Unix time for consistent processing.
 
 This approach ensures reproducibility and establishes a structured input format for the simulation pipeline. Using historical replay rather than live feeds aligns with common practices in quantitative finance research, where controlled backtesting environments are used to evaluate trading logic~\cite{aldridgeHFT, carteaMicrostructure}.
 
 \subsection{Event Abstraction}
 
-To support an event-driven architecture, market data is abstracted into discrete events. An \texttt{Event} data structure is defined with three fields: timestamp, event type, and payload. Event types are enumerated to allow future extension for order submission, cancellation, and execution events.
+To support an event-driven architecture, market data is abstracted into discrete events. 
+An \texttt{Event} data structure is defined with three fields: timestamp, event type, and payload. 
+Event types are enumerated to allow future extension for order submission, cancellation, and execution events.
 
-Each market update is represented as a structured event object, enabling uniform handling of data within the system. This abstraction follows principles of real-time stream processing systems, where events are processed sequentially and deterministically~\cite{stonebrakerLatency}. Event abstraction is critical for modeling realistic trading environments, where exchanges operate as event-driven systems governed by limit order book mechanics~\cite{harrisTrading}.
+Each market update is represented as a structured event object, enabling uniform handling of data within the system. 
+This abstraction follows principles of real-time stream processing systems, where events are processed sequentially and deterministically~\cite{stonebrakerLatency}. 
+Event abstraction is critical for modeling realistic trading environments, where exchanges operate as event-driven systems governed by limit order book mechanics~\cite{harrisTrading}.
 
 \subsection{Deterministic Market Replay}
 
-A replay engine iterates sequentially over historical market data and converts each row into a \texttt{MARKET\_UPDATE} event. The replay mechanism maintains an internal index and exposes methods to check for remaining events and retrieve the next event in chronological order.
+A replay engine iterates sequentially over historical market data and converts each row into a \texttt{MARKET\_UPDATE} event. 
+The replay mechanism maintains an internal index and exposes methods to check for remaining events and retrieve the next event in chronological order.
 
-Deterministic replay prevents look-ahead bias and ensures that events are processed strictly in historical sequence. This is essential when studying the interaction between prediction and execution, since improper ordering can artificially inflate model performance~\cite{bouchaudTrades}. Although a full event dispatcher and execution engine have not yet been implemented, the replay system establishes the primary input stream for the future low-latency architecture.
+Deterministic replay prevents look-ahead bias and ensures that events are processed strictly in historical sequence. 
+This is essential when studying the interaction between prediction and execution, since improper ordering can artificially inflate model performance~\cite{bouchaudTrades}. 
+Although a full event dispatcher and execution engine have not yet been implemented, the replay system establishes the primary input stream for the future low-latency architecture.
 
 \section{Conclusion}
 
 \bibliographystyle{acm}
-\bibliography{annotated_bibliography.bib}
+\bibliography{bibliography.bib}
 
 \end{document}
