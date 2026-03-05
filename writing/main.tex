@@ -37,7 +37,7 @@ The system replays historical market data, processes events sequentially, genera
 By focusing on the infrastructure that connects predictive models with market execution, this work aims to bridge the gap between machine learning research and practical trading system design.
 
 
-\section{Related Works}
+\section{Background}
 Understanding algorithmic trading systems requires familiarity with the structure of modern financial markets. 
 Most electronic exchanges operate using a limit order book, where buy and sell orders are organized by price and time of submission. 
 When traders submit limit orders, they specify a price at which they are willing to buy or sell an asset. 
@@ -56,6 +56,17 @@ The performance of such systems depends not only on the accuracy of prediction m
 Cartea et al.~\cite{carteaMicrostructure} further emphasizes that successful algorithmic trading strategies must always account for both predictive signaling (BUY/SELL/HOLD) and market impact. 
 Trades can influence market prices, and poorly designed strategies may result from terrible selection, where informed traders exploit predictable behavior. 
 As a result, realistic simulation environments must inlcude all aspects of market microstructure when evaluating a given trading algorithm.
+
+\section{Related Work}
+A large body of research has explored the use of machine learning techniques for financial market prediction. 
+Early approaches relied primarily on linear models and statistical methods, but recent work has increasingly focused on deep learning architectures capable of capturing complex temporal patterns in financial data. 
+Fischer and Krauss demonstrate that Long Short-Term Memory (LSTM) neural networks can outperform traditional machine learning models in predicting stock market returns using historical price data~\cite{fischer2018lstm}. 
+Their work highlights the potential of deep learning models to capture long-term dependencies in financial time series.
+
+Similarly, Gu, Kelly, and Xiu conduct a comprehensive empirical study of machine learning methods applied to asset pricing~\cite{gu2020empirical}. 
+Their research evaluates a wide range of machine learning algorithms, including neural networks and tree-based models, using a large set of financial predictors. 
+The authors find that machine learning approaches can improve predictive performance relative to traditional linear models, particularly when working with high-dimensional datasets.
+
 
 \section{Methodology}
 
