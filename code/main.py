@@ -6,7 +6,7 @@ from orderManager import OrderManager
 from executionEngine import ExecutionEngine
 from portfolio import Portfolio
 from latency import LatencyTracker
-
+from orderbook import LimitOrderBook
 
 def main():
 
@@ -16,9 +16,10 @@ def main():
     logger = Logger()
     strategy = SimpleStrategy()
     order_manager = OrderManager()
-    execution_engine = ExecutionEngine()
     portfolio = Portfolio()
     latency = LatencyTracker()
+    orderbook = LimitOrderBook()
+    execution_engine = ExecutionEngine(orderbook)
 
     # Load events from replay into dispatcher
     while replay.has_events():
@@ -29,26 +30,30 @@ def main():
     max_events = 5000
 
     while dispatcher.has_events() and processed < max_events:
-       
-        event = dispatcher.pop()
-        latency.start()
-        logger.log_event(event)
 
+        event = dispatcher.pop()
+
+        latency.start()
+        #logger.log_event(event)
+        price = float(event.payload["price"])
+        orderbook.update_market(price)
         signal = strategy.on_market_update(event)
 
         if signal:
 
-            print("Signal:", signal)
-
+            if processed % 100 == 0:
+                print("Signal:", signal)
             order = order_manager.create_order(signal, event)
-
             fill = execution_engine.execute(order)
-
             portfolio.update(fill)
-        latency.stop()
-        processed += 1
+            latency.stop()
+
+    processed += 1
     latency.summary()
     portfolio.summary()
+
+    last_price = float(event.payload["price"])
+    print("\nPortfolio Value:", portfolio.value(last_price))
 
 
 if __name__ == "__main__":

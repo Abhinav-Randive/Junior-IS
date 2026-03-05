@@ -1,27 +1,25 @@
 class SimpleStrategy:
-    def __init__(self):
-        self.last_price = None
-        self.buy_signals = 0
-        self.sell_signals = 0
+
+    def __init__(self, window=10):
+
+        self.prices = []
+        self.window = window
 
     def on_market_update(self, event):
 
         price = float(event.payload["price"])
 
-        if self.last_price is None:
-            self.last_price = price
+        self.prices.append(price)
+
+        if len(self.prices) < self.window:
             return None
 
-        signal = None
+        moving_avg = sum(self.prices[-self.window:]) / self.window
 
-        if price > self.last_price:
-            signal = "BUY"
-            self.buy_signals += 1
+        if price > moving_avg:
+            return "BUY"
 
-        elif price < self.last_price:
-            signal = "SELL"
-            self.sell_signals += 1
+        if price < moving_avg:
+            return "SELL"
 
-        self.last_price = price
-
-        return signal
+        return None

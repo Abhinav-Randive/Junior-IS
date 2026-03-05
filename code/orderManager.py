@@ -1,5 +1,6 @@
 from order import Order
 
+
 class OrderManager:
 
     def create_order(self, signal, event):
@@ -9,7 +10,7 @@ class OrderManager:
         if signal == "BUY":
             return Order("BUY", price, 1)
 
-        if signal == "SELL":
+        elif signal == "SELL":
             return Order("SELL", price, 1)
 
         return None
