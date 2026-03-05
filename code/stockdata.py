@@ -24,7 +24,7 @@ print("Columns:", data.columns)
 data = data[["Datetime", "Close", "Volume"]]
 data.columns = ["timestamp", "price", "quantity"]
 
-data["timestamp"] = pd.to_datetime(data["timestamp"]).view("int64") // 10**9
+data["timestamp"] = pd.to_datetime(data["timestamp"]).astype("int64") // 10**9
 
 data.to_csv("data/sp500.csv", index=False)
 
