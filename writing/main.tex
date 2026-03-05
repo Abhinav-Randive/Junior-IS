@@ -65,33 +65,97 @@ Trades can influence market prices, and poorly designed strategies may result fr
 As a result, realistic simulation environments must inlcude all aspects of market microstructure when evaluating a given trading algorithm.
 
 \section{Related Work}
-A large body of research has explored the use of machine learning techniques for financial market prediction. 
-Early approaches relied primarily on linear models and statistical methods, but recent work has increasingly focused on deep learning architectures capable of capturing complex temporal patterns in financial data. 
-Fischer and Krauss demonstrate that Long Short-Term Memory (LSTM) neural networks can outperform traditional machine learning models in predicting stock market returns using historical price data~\cite{fischer2018lstm}. 
-Their work highlights the potential of deep learning models to capture long-term dependencies in financial time series.
 
-Similarly, Gu, Kelly, and Xiu conduct a comprehensive empirical study of machine learning methods applied to asset pricing~\cite{gu2020empirical}. 
-Their research evaluates a wide range of machine learning algorithms, including neural networks and tree-based models, using a large set of financial predictors. 
-The authors find that machine learning approaches can improve predictive performance relative to traditional linear models, particularly when working with high-dimensional datasets.
+Research on algorithmic trading spans several disciplines, including 
+machine learning, financial economics, and computer systems. 
+Prior work in this area can broadly be divided into three categories: 
+machine learning approaches for market prediction, studies of market 
+microstructure, and research on real-time systems architecture.
 
-More recent research has explored the integration of additional data sources into predictive models. 
-Patsiarikas et al.~\cite{patsiarikas2025macroeconomic} examine the use of macroeconomic indicators, technical market signals, and sentiment data for stock market forecasting. 
-Their results suggest that combining multiple categories of data can improve predictive performance compared to using price data alone. 
-However, these studies typically focus on prediction accuracy rather than the operational constraints involved in executing trading strategies in real markets.
+\subsection{Machine Learning for Financial Prediction}
 
-Other research emphasizes the importance of market microstructure and execution dynamics. 
-Bouchaud, Farmer, and Lillo analyze how markets absorb supply and demand changes over time, demonstrating that trading activity itself can influence price formation~\cite{bouchaudTrades}. 
-Their work highlights the importance of understanding how trades interact with market liquidity and order flow when designing trading strategies.
+A large body of research has explored the use of machine learning 
+techniques for predicting financial market behavior. Early approaches 
+relied primarily on linear regression models and statistical methods, 
+but recent work has increasingly focused on deep learning architectures 
+capable of capturing complex temporal patterns in financial data.
 
-While the literature provides extensive research on predictive modeling and market behavior, fewer studies examine the interaction between predictive signals and the architecture of trading systems. 
-Real-time stream processing research provides insight into the design of low-latency systems capable of processing high-frequency data streams. 
-Stonebraker et al.~\cite{stonebrakerLatency} identify key requirements for real-time data processing systems, including low latency, deterministic processing, and efficient memory management. 
-These principles are directly relevant to the design of algorithmic trading platforms.
+Fischer and Krauss demonstrate that Long Short-Term Memory (LSTM) 
+neural networks can outperform traditional machine learning models 
+when predicting stock market returns using historical price data 
+\cite{fischer2018lstm}. Their results highlight the ability of deep 
+learning models to capture long-term dependencies in financial time 
+series that may not be easily identified by classical statistical 
+techniques.
 
-This project builds on these ideas by combining predictive modeling concepts with a systems-oriented approach to trading simulation. 
-Rather than focusing solely on prediction accuracy, the project investigates how architectural decisions influence the ability of trading systems to act on predictive signals under realistic market conditions.
+Similarly, Gu, Kelly, and Xiu conduct a comprehensive empirical study 
+of machine learning methods applied to asset pricing \cite{gu2020empirical}. 
+Their research evaluates a wide range of algorithms, including neural 
+networks and tree-based models, using a large set of financial predictors. 
+The authors find that machine learning approaches can improve predictive 
+performance relative to traditional linear models, particularly when 
+working with high-dimensional datasets.
 
+Despite these advances, predictive modeling in financial markets remains 
+challenging due to the non-stationary nature of financial time series. 
+Statistical relationships between variables can change over time as market 
+conditions evolve, meaning that models which perform well during 
+historical backtesting may degrade when deployed in live trading 
+environments. Consequently, predictive accuracy alone is often 
+insufficient for evaluating the real-world effectiveness of trading 
+strategies.
 
+\subsection{Market Microstructure and Trading Dynamics}
+
+Another important area of research focuses on market microstructure, 
+which studies the mechanisms through which trades occur in financial 
+markets. Modern electronic exchanges operate using limit order books, 
+where buy and sell orders are matched according to price-time priority.
+
+Bouchaud, Farmer, and Lillo analyze how markets absorb changes in supply 
+and demand over time \cite{bouchaudTrades}. Their work demonstrates that 
+price dynamics emerge from the interaction of orders within the limit 
+order book rather than purely from external information shocks. This 
+perspective highlights the importance of understanding liquidity and 
+order flow when designing algorithmic trading strategies.
+
+Recent research has also explored the integration of alternative data 
+sources into predictive models. Patsiarikas et al.~\cite{patsiarikas2025macroeconomic} 
+investigate the use of macroeconomic indicators, technical signals, 
+and sentiment data for stock market forecasting. Their findings suggest 
+that combining multiple sources of information can improve predictive 
+performance compared to models that rely solely on historical price data.
+
+However, most studies in this area focus primarily on improving forecast 
+accuracy rather than examining the operational constraints involved in 
+executing trading strategies within real market environments.
+
+\subsection{Systems Architecture and Low-Latency Processing}
+
+Beyond predictive modeling and market microstructure, the design of 
+trading system infrastructure has also been studied within the computer 
+systems literature. Modern financial markets generate extremely large 
+volumes of real-time data, requiring trading platforms to process 
+continuous streams of market events with minimal latency.
+
+Stonebraker et al.~\cite{stonebrakerLatency} describe several key 
+requirements for real-time stream processing systems, including 
+deterministic event ordering, efficient memory usage, and the ability 
+to process high-frequency data streams without introducing significant 
+processing delays. These principles are directly applicable to 
+algorithmic trading systems.
+
+Event-driven architectures are commonly used in trading systems because 
+they allow market activity to be represented as sequences of discrete 
+events that can be processed in strict chronological order. Such systems 
+must ingest market data, generate trading decisions, and submit orders 
+within extremely short time windows.
+
+Despite the importance of these architectural considerations, relatively 
+few studies examine the interaction between predictive models and the 
+software infrastructure used to execute trading strategies. Many machine 
+learning studies assume idealized trading conditions in which predictions 
+can be executed instantaneously.
 
 \section{Methodology}
 
