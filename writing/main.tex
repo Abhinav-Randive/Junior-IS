@@ -18,9 +18,25 @@ Algorithmic Trading with Predictive Signals}}
 \maketitle
 
 \section{Introduction}
-Financial markets have increasingly become dominated by automated trading systems that make decisions and execute trades at extremely high speeds. These systems rely on algorithmic strategies that analyze market data and react within milliseconds or even microseconds. As a result, the design of trading infrastructure has become just as important as the predictive models used to generate trading signals. Even when predictive models are accurate, delays in processing or order execution can eliminate any potential advantage in highly competitive markets.
+Financial markets have increasingly become dominated by automated trading systems that make decisions and execute trades at extremely high speeds. 
+These systems rely on algorithmic strategies that analyze market data and react within milliseconds or even microseconds. 
+As a result, the design of trading infrastructure has become just as important as the predictive models used to generate trading signals. 
+Even when predictive models are accurate, delays in processing or order execution can eliminate any potential advantage in highly competitive markets.
 
-Recent advances in machine learning have led to significant interest in applying predictive models to financial markets. Researchers have explored techniques ranging from classical statistical models to deep learning architectures for forecasting stock price movements. These models often attempt to identify patterns in historical price data, macroeconomic indicators, or market sentiment signals in order to generate short-term predictions about market behavior.
+Recent advances in machine learning have led to significant interest in applying predictive models to financial markets. 
+Researchers have explored techniques ranging from classical statistical models to deep learning architectures for forecasting stock price movements. 
+These models often attempt to identify patterns in historical price data, macroeconomic indicators, or market sentiment signals in order to generate short-term predictions about market behavior.
+
+However, predictive accuracy alone does not guarantee profitability in financial markets.
+In practice, the ability to act on predictions depends on the latency of the trading system and the structure of the market itself. 
+Modern electronic markets operate using limit order books and price-time priority mechanisms, meaning that orders arriving even slightly later than competitors may lose execution priority. 
+This creates a critical interaction between prediction, system architecture, and market microstructure.
+
+The goal of this project is to study these architectural tradeoffs by developing an event-driven trading simulation system. 
+The system replays historical market data, processes events sequentially, generates short-term predictive signals, and measures the impact of latency and execution constraints on simulated trading outcomes. 
+By focusing on the infrastructure that connects predictive models with market execution, this work aims to bridge the gap between machine learning research and practical trading system design.
+
+
 \section{Related Works}
 
 \section{Methodology}
