@@ -36,6 +36,13 @@ The goal of this project is to study these architectural tradeoffs by developing
 The system replays historical market data, processes events sequentially, generates short-term predictive signals, and measures the impact of latency and execution constraints on simulated trading outcomes. 
 By focusing on the infrastructure that connects predictive models with market execution, this work aims to bridge the gap between machine learning research and practical trading system design.
 
+In addition to predictive modeling challenges, the operational environment of financial markets introduces additional constraints. 
+Modern exchanges operate at extremely high speeds and rely on complex technological infrastructures that process millions of messages per second. 
+Trading systems must be designed to handle high-frequency streams of constant market data while maintaining a deterministic order and minimizing latency.
+
+These constraints mean that the architecture of the trading system itself plays a crucial role in determining whether predictive signals can actually be translated into profitable trades. 
+Even small delays in processing market data or submitting orders can result in lost queue position, reduced fill rates, and increased exposure to adverse price movements. 
+Moreover, understanding the interaction between predictive models and trading system architecture has become an important area of study in quantitative finance and financial engineering.
 
 \section{Background}
 Understanding algorithmic trading systems requires familiarity with the structure of modern financial markets. 
@@ -83,6 +90,8 @@ These principles are directly relevant to the design of algorithmic trading plat
 
 This project builds on these ideas by combining predictive modeling concepts with a systems-oriented approach to trading simulation. 
 Rather than focusing solely on prediction accuracy, the project investigates how architectural decisions influence the ability of trading systems to act on predictive signals under realistic market conditions.
+
+
 
 \section{Methodology}
 
