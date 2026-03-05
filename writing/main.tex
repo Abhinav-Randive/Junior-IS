@@ -48,6 +48,15 @@ Orders with better prices are executed first, but when multiple orders exist at 
 This means that execution speed can significantly affect trading outcomes. Even small delays in order submission can cause a trader to lose queue position, reducing the likelihood of execution. 
 Harris provides a detailed overview of these market microstructure mechanisms and their implications for trading strategies~\cite{harrisTrading}.
 
+HFT trading systems are specifically designed to minimize such delays. 
+According to Aldridge, high-frequency trading firms routinely invest heavily in low-latency infrastructure, including using specialized hardware, software, and proximity hosting, trying to be as close to the exchange servers as possible~\cite{aldridgeHFT}. 
+These trading systems monitor and process incoming market data and update trading decisions in real time in microseconds. 
+The performance of such systems depends not only on the accuracy of prediction models but also on the efficiency of event processing, memory access, and network communication.
+
+Cartea et al.~\cite{carteaMicrostructure} further emphasizes that successful algorithmic trading strategies must always account for both predictive signaling (BUY/SELL/HOLD) and market impact. 
+Trades can influence market prices, and poorly designed strategies may result from terrible selection, where informed traders exploit predictable behavior. 
+As a result, realistic simulation environments must inlcude all aspects of market microstructure when evaluating a given trading algorithm.
+
 \section{Methodology}
 
 This project begins by constructing the foundational infrastructure required for an event-driven trading system simulation. 
