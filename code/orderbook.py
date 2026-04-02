@@ -1,25 +1,50 @@
+from collections import deque
 from fill import Fill
 
-def process_orders(self):
 
-    fills = []
+class LimitOrderBook:
 
-    while self.buy_queue and self.sell_queue:
+    def __init__(self):
 
-        buy = self.buy_queue[0]
-        sell = self.sell_queue[0]
+        self.buy_queue = deque()
+        self.sell_queue = deque()
 
-        if buy.price >= sell.price:
+        self.best_bid = None
+        self.best_ask = None
 
-            trade_price = (buy.price + sell.price) / 2
+    def update_market(self, price):
 
-            fills.append(Fill("BUY", trade_price, buy.quantity, buy.timestamp))
-            fills.append(Fill("SELL", trade_price, sell.quantity, sell.timestamp))
+        spread = price * 0.0002
+        self.best_bid = price - spread
+        self.best_ask = price + spread
 
-            self.buy_queue.popleft()
-            self.sell_queue.popleft()
+    def submit_order(self, order):
 
+        if order.side == "BUY":
+            self.buy_queue.append(order)
         else:
-            break
+            self.sell_queue.append(order)
 
-    return fills
+    def process_orders(self):
+
+        fills = []
+
+        while self.buy_queue and self.sell_queue:
+
+            buy = self.buy_queue[0]
+            sell = self.sell_queue[0]
+
+            if buy.price >= sell.price:
+
+                trade_price = sell.price   # buyer pays ask
+
+                fills.append(Fill("BUY", trade_price, buy.quantity, buy.timestamp))
+                fills.append(Fill("SELL", trade_price, sell.quantity, sell.timestamp))
+
+                self.buy_queue.popleft()
+                self.sell_queue.popleft()
+
+            else:
+                break
+
+        return fills

@@ -7,10 +7,13 @@ from executionEngine import ExecutionEngine
 from portfolio import Portfolio
 from latency import LatencyTracker
 from orderbook import LimitOrderBook
+from riskManager import RiskManager
+
+import pickle
+
 
 def main():
 
-    # Initialize system components
     replay = MarketReplay("data/sp500.csv")
     dispatcher = EventDispatcher()
     logger = Logger()
@@ -20,42 +23,55 @@ def main():
     latency = LatencyTracker()
     orderbook = LimitOrderBook()
     execution_engine = ExecutionEngine(orderbook)
+    risk_manager = RiskManager()
 
-    # Load events from replay into dispatcher
     while replay.has_events():
-        event = replay.next_event()
-        dispatcher.push(event)
+        dispatcher.push(replay.next_event())
 
     processed = 0
     max_events = 50000
+    last_price = 0
 
     while dispatcher.has_events() and processed < max_events:
 
         event = dispatcher.pop()
 
         latency.start()
-        #logger.log_event(event)
+
+        # logger.log_event(event)  # optional
+
         price = float(event.payload["price"])
+        last_price = price
+
+        # update market state
         orderbook.update_market(price)
+
+        # strategy signal
         signal = strategy.on_market_update(event)
 
         if signal:
 
             order = order_manager.create_order(signal, event)
 
-            fills = execution_engine.execute(order)
+            # risk check BEFORE execution
+            if risk_manager.approve(order, portfolio):
 
-            for fill in fills:
-                portfolio.update(fill)
-                
+                fills = execution_engine.execute(order)
+
+                # update portfolio with fills
+                for fill in fills:
+                    portfolio.update(fill, price)
+
         latency.stop()
+        processed += 1
 
-    
     latency.summary()
     portfolio.summary()
 
-    last_price = float(event.payload["price"])
-    print("\nPortfolio Value:", portfolio.value(last_price))
+    print("\nFinal Portfolio Value:", portfolio.value(last_price))
+    
+    with open("equity.pkl", "wb") as f:
+        pickle.dump(portfolio.history, f)
 
 
 if __name__ == "__main__":

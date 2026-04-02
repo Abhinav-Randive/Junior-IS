@@ -1,25 +1,25 @@
 class SimpleStrategy:
 
-    def __init__(self, window=10):
-
+    def __init__(self, short=5, long=20):
         self.prices = []
-        self.window = window
+        self.short = short
+        self.long = long
 
-    def on_market_update(self, event):
+    def on_market_update(self, event, portfolio):
 
         price = float(event.payload["price"])
-
         self.prices.append(price)
 
-        if len(self.prices) < self.window:
+        if len(self.prices) < self.long:
             return None
 
-        moving_avg = sum(self.prices[-self.window:]) / self.window
+        short_ma = sum(self.prices[-self.short:]) / self.short
+        long_ma = sum(self.prices[-self.long:]) / self.long
 
-        if price > moving_avg:
+        if short_ma > long_ma and portfolio.position <= 0:
             return "BUY"
 
-        if price < moving_avg:
+        if short_ma < long_ma and portfolio.position >= 0:
             return "SELL"
 
         return None

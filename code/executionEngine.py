@@ -1,13 +1,23 @@
+from fill import Fill
+
 class ExecutionEngine:
 
     def __init__(self, orderbook):
-
         self.orderbook = orderbook
 
     def execute(self, order):
 
-        self.orderbook.submit_order(order)
+        # simulate immediate market execution
+        if order.side == "BUY":
+            price = self.orderbook.best_ask
+        else:
+            price = self.orderbook.best_bid
 
-        fills = self.orderbook.process_orders()
+        fill = Fill(
+            side=order.side,
+            price=price,
+            quantity=order.quantity,
+            timestamp=order.timestamp
+        )
 
-        return fills
+        return [fill]

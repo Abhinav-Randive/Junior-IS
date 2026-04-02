@@ -6,28 +6,32 @@ class Portfolio:
         self.cash = 0
         self.max_position = max_position
 
-    def can_buy(self):
+        self.history = []  # equity curve
+        self.trades = []
 
+    def can_buy(self):
         return self.position < self.max_position
 
     def can_sell(self):
-
         return self.position > -self.max_position
 
-    def update(self, order):
+    def update(self, fill, market_price):
 
-        if order.side == "BUY" and self.can_buy():
+        if fill.side == "BUY" and self.can_buy():
+            self.position += fill.quantity
+            self.cash -= fill.price * fill.quantity
 
-            self.position += order.quantity
-            self.cash -= order.price * order.quantity
+        elif fill.side == "SELL" and self.can_sell():
+            self.position -= fill.quantity
+            self.cash += fill.price * fill.quantity
 
-        elif order.side == "SELL" and self.can_sell():
+        self.trades.append(fill)
 
-            self.position -= order.quantity
-            self.cash += order.price * order.quantity
+        # track portfolio value over time
+        value = self.cash + self.position * market_price
+        self.history.append(value)
 
     def value(self, price):
-
         return self.cash + self.position * price
 
     def summary(self):
@@ -35,3 +39,4 @@ class Portfolio:
         print("\nPortfolio Summary")
         print("Position:", self.position)
         print("Cash:", round(self.cash, 2))
+        print("Total Trades:", len(self.trades))
