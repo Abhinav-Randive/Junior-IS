@@ -303,6 +303,26 @@ system records the time required to:
 This enables quantitative evaluation of how architectural decisions 
 impact system performance.
 
+\section{Results}
+
+The system was evaluated using historical S\&P 500 data at one-minute 
+intervals. A total of approximately 1,800 events were processed during 
+a typical simulation run.
+
+Latency measurements indicate that the system operates efficiently under 
+the current configuration. The average processing latency per event was 
+approximately 0.04 milliseconds, with a maximum observed latency of 
+12.4 milliseconds. These results demonstrate that the system is capable 
+of processing market data in near real-time under simulated conditions.
+
+From a trading perspective, the strategy generated frequent BUY and SELL 
+signals based on short-term price fluctuations. The final portfolio state 
+after simulation showed a small net position and a negative cash balance, 
+resulting in an overall negative portfolio value.
+
+These results highlight that while the system is functionally correct and 
+operationally efficient, the current trading strategy does not produce 
+profitable outcomes under the tested conditions.
 
 \bibliographystyle{acm}
 \bibliography{bibliography.bib}
