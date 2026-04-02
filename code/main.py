@@ -47,6 +47,8 @@ def main():
 
             for fill in fills:
                 portfolio.update(fill)
+                
+        latency.stop()
 
     
     latency.summary()
