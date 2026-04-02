@@ -209,6 +209,56 @@ Although basic, this strategy provides a controlled environment for
 evaluating how system latency affects the ability to act on predictive 
 signals.
 
+\subsection{System Design Tradeoffs}
+
+A central focus of this project is understanding the tradeoffs involved 
+in designing low-latency trading systems. While predictive models aim 
+to generate accurate signals, the effectiveness of these signals depends 
+heavily on how quickly and reliably they can be executed within the system.
+
+One key tradeoff exists between system complexity and latency. More 
+advanced trading strategies, such as those incorporating machine learning 
+models or multiple data sources, can improve predictive accuracy. However, 
+these approaches often require additional computation time, which increases 
+latency. In highly competitive markets, even small delays can result in 
+loss of execution priority, reducing the likelihood of order fills.
+
+Another important tradeoff involves determinism versus flexibility. 
+Event-driven architectures enforce strict ordering of events, ensuring 
+that the system processes market data in a consistent and reproducible 
+manner. This is essential for accurate backtesting and analysis. However, 
+strict ordering can introduce bottlenecks if the system is not optimized 
+for high-throughput processing. Designing systems that maintain 
+determinism while minimizing delay is therefore a key challenge.
+
+The choice of execution model also introduces tradeoffs. In simplified 
+simulations, orders are often assumed to be executed immediately at the 
+observed market price. While this assumption simplifies analysis, it 
+fails to capture important aspects of real-world trading, such as queue 
+position, liquidity constraints, and partial fills. By introducing a 
+queue-based matching system with probabilistic fills, this project 
+captures a more realistic representation of market behavior. However, 
+this added realism comes at the cost of increased system complexity.
+
+Latency measurement itself presents design considerations. Measuring 
+latency at a fine-grained level provides valuable insights into system 
+performance, but frequent measurement can introduce overhead. The system 
+must balance the need for detailed performance data with the goal of 
+minimizing measurement-induced delays.
+
+Finally, there is a tradeoff between simulation realism and computational 
+efficiency. Highly detailed simulations that incorporate order book depth, 
+market impact, and transaction costs provide more accurate insights but 
+require significantly more computational resources. In contrast, simpler 
+models allow for faster experimentation but may overlook critical dynamics 
+of real markets.
+
+By explicitly modeling and evaluating these tradeoffs, this project 
+demonstrates that successful algorithmic trading depends not only on 
+predictive accuracy but also on careful system design. The interaction 
+between prediction, latency, and execution ultimately determines whether 
+a trading strategy can be effectively deployed in practice.
+
 \section{Implementation}
 
 \subsection{System Architecture}
