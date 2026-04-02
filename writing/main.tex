@@ -159,16 +159,27 @@ can be executed instantaneously.
 
 \section{Methodology}
 
-This project begins by constructing the foundational infrastructure required for an event-driven trading system simulation. 
-At this stage, the focus is on market data ingestion and deterministic event replay, which form the basis for analyzing architectural tradeoffs in low-latency trading systems.
+This project develops an event-driven trading simulation to analyze the 
+interaction between predictive signals and system latency. The system 
+replays historical market data, processes events sequentially, generates 
+trading signals, and simulates order execution under realistic constraints.
 
 \subsection{Market Data Acquisition}
 
-Historical market data is downloaded using the Yahoo Finance API through the \texttt{yfinance} Python library. 
-The current implementation retrieves recent S\&P 500 index data at one-minute intervals and stores timestamped price and volume information in CSV format. 
-The preprocessing step flattens multi-index columns, standardizes column names, and converts timestamps to integer Unix time for consistent processing.
+Historical market data is obtained using the \texttt{yfinance} API, which 
+provides minute-level price and volume data for the S\&P 500 index. The 
+data is preprocessed to ensure consistency and usability.
 
-This approach ensures reproducibility and establishes a structured input format for the simulation pipeline. Using historical replay rather than live feeds aligns with common practices in quantitative finance research, where controlled backtesting environments are used to evaluate trading logic~\cite{aldridgeHFT, carteaMicrostructure}.
+The preprocessing pipeline includes:
+\begin{itemize}
+    \item Flattening multi-index columns
+    \item Selecting relevant fields (timestamp, price, volume)
+    \item Converting timestamps to Unix time format
+    \item Exporting cleaned data to CSV
+\end{itemize}
+
+This ensures reproducibility and provides a structured input for the 
+simulation system.
 
 \subsection{Event Abstraction}
 
