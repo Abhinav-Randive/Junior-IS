@@ -209,7 +209,50 @@ Although basic, this strategy provides a controlled environment for
 evaluating how system latency affects the ability to act on predictive 
 signals.
 
-\section{Conclusion}
+\section{Implementation}
+
+\subsection{System Architecture}
+
+The system is composed of modular components that interact through an 
+event-driven pipeline:
+
+\begin{itemize}
+    \item \textbf{Replay Engine:} Streams historical market data
+    \item \textbf{Event Dispatcher:} Maintains a priority queue of events
+    \item \textbf{Strategy:} Generates trading signals
+    \item \textbf{Order Manager:} Converts signals into orders
+    \item \textbf{Execution Engine:} Simulates trade execution
+    \item \textbf{Limit Order Book:} Maintains order queues and matching
+    \item \textbf{Portfolio:} Tracks positions and profit/loss
+    \item \textbf{Latency Tracker:} Measures processing time
+\end{itemize}
+
+This modular design allows individual components to be modified and 
+evaluated independently.
+
+\subsection{Order Execution Model}
+
+Unlike simplified simulations where orders are executed instantly, this 
+system introduces a queue-based execution model.
+
+Orders are placed into buy and sell queues and matched based on price 
+conditions and probabilistic fill rules. This models real-world trading 
+behavior, where execution depends on queue position and market liquidity.
+
+\subsection{Latency Measurement}
+
+Latency is measured at the event-processing level. For each event, the 
+system records the time required to:
+
+\begin{itemize}
+    \item Process market data
+    \item Generate trading signals
+    \item Execute orders
+\end{itemize}
+
+This enables quantitative evaluation of how architectural decisions 
+impact system performance.
+
 
 \bibliographystyle{acm}
 \bibliography{bibliography.bib}
