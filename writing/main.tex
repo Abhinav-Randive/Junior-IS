@@ -181,24 +181,33 @@ The preprocessing pipeline includes:
 This ensures reproducibility and provides a structured input for the 
 simulation system.
 
-\subsection{Event Abstraction}
+\subsection{Event-Driven Architecture}
 
-To support an event-driven architecture, market data is abstracted into discrete events. 
-An \texttt{Event} data structure is defined with three fields: timestamp, event type, and payload. 
-Event types are enumerated to allow future extension for order submission, cancellation, and execution events.
+Market data is represented as a sequence of discrete events. Each event 
+is defined using an \texttt{Event} object containing a timestamp, event 
+type, and payload.
 
-Each market update is represented as a structured event object, enabling uniform handling of data within the system. 
-This abstraction follows principles of real-time stream processing systems, where events are processed sequentially and deterministically~\cite{stonebrakerLatency}. 
-Event abstraction is critical for modeling realistic trading environments, where exchanges operate as event-driven systems governed by limit order book mechanics~\cite{harrisTrading}.
+Events are processed through a priority queue, ensuring deterministic 
+ordering. This prevents look-ahead bias and mirrors real-world trading 
+systems where events must be handled sequentially.
 
-\subsection{Deterministic Market Replay}
+\subsection{Deterministic Replay Engine}
 
-A replay engine iterates sequentially over historical market data and converts each row into a \texttt{MARKET\_UPDATE} event. 
-The replay mechanism maintains an internal index and exposes methods to check for remaining events and retrieve the next event in chronological order.
+The replay engine iterates over historical data and converts each row 
+into a \texttt{MARKET\_UPDATE} event. This enables controlled simulation 
+of real-time market conditions.
 
-Deterministic replay prevents look-ahead bias and ensures that events are processed strictly in historical sequence. 
-This is essential when studying the interaction between prediction and execution, since improper ordering can artificially inflate model performance~\cite{bouchaudTrades}. 
-Although a full event dispatcher and execution engine have not yet been implemented, the replay system establishes the primary input stream for the future low-latency architecture.
+Deterministic replay ensures that results are reproducible and that 
+performance metrics are not influenced by future information.
+
+\subsection{Trading Strategy}
+
+A simple rule-based trading strategy is implemented to generate BUY and 
+SELL signals based on short-term price movements.
+
+Although basic, this strategy provides a controlled environment for 
+evaluating how system latency affects the ability to act on predictive 
+signals.
 
 \section{Conclusion}
 
