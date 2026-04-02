@@ -1,3 +1,4 @@
+import random
 from collections import deque
 
 
@@ -5,60 +6,55 @@ class LimitOrderBook:
 
     def __init__(self):
 
-        self.bids = deque()  # buyers
-        self.asks = deque()  # sellers
+        self.buy_queue = deque()
+        self.sell_queue = deque()
 
         self.best_bid = None
         self.best_ask = None
 
     def update_market(self, price):
 
-        spread = price * 0.0002  # 2 bps synthetic spread
+        spread = price * 0.0002
 
         self.best_bid = price - spread
         self.best_ask = price + spread
 
-    def add_order(self, order):
+    def submit_order(self, order):
 
         if order.side == "BUY":
-            self.bids.append(order)
+            self.buy_queue.append(order)
 
-        elif order.side == "SELL":
-            self.asks.append(order)
+        else:
+            self.sell_queue.append(order)
 
-    def match(self):
+    def process_orders(self):
 
         fills = []
 
-        while self.bids and self.asks:
+        while self.buy_queue and self.sell_queue:
 
-            buy = self.bids[0]
-            sell = self.asks[0]
+            buy = self.buy_queue[0]
+            sell = self.sell_queue[0]
 
             if buy.price >= sell.price:
 
-                trade_price = (buy.price + sell.price) / 2
+                # simulating queue priority
+                if random.random() < 0.7:  # 70% fill probability
+                    trade_price = (buy.price + sell.price) / 2
 
-                buy.price = trade_price
-                sell.price = trade_price
+                    buy.price = trade_price
+                    sell.price = trade_price
 
-                fills.append(buy)
-                fills.append(sell)
+                    fills.append(buy)
+                    fills.append(sell)
 
-                self.bids.popleft()
-                self.asks.popleft()
+                    self.buy_queue.popleft()
+                    self.sell_queue.popleft()
+
+                else:
+                    break
 
             else:
                 break
 
         return fills
-
-    def execute_market(self, order):
-
-        if order.side == "BUY":
-            order.price = self.best_ask
-
-        elif order.side == "SELL":
-            order.price = self.best_bid
-
-        return order

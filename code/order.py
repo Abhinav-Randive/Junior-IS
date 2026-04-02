@@ -5,3 +5,4 @@ class Order:
     side: str
     price: float
     quantity: int
+    timestamp: int

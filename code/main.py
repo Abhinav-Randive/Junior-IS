@@ -27,7 +27,7 @@ def main():
         dispatcher.push(event)
 
     processed = 0
-    max_events = 5000
+    max_events = 50000
 
     while dispatcher.has_events() and processed < max_events:
 
@@ -41,14 +41,14 @@ def main():
 
         if signal:
 
-            if processed % 100 == 0:
-                print("Signal:", signal)
             order = order_manager.create_order(signal, event)
-            fill = execution_engine.execute(order)
-            portfolio.update(fill)
-            latency.stop()
 
-    processed += 1
+            fills = execution_engine.execute(order)
+
+            for fill in fills:
+                portfolio.update(fill)
+
+    
     latency.summary()
     portfolio.summary()
 

@@ -6,7 +6,8 @@ class ExecutionEngine:
 
     def execute(self, order):
 
-        # Simulate market order
-        fill = self.orderbook.execute_market(order)
+        self.orderbook.submit_order(order)
 
-        return fill
+        fills = self.orderbook.process_orders()
+
+        return fills

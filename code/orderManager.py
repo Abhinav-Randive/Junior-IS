@@ -7,10 +7,9 @@ class OrderManager:
 
         price = float(event.payload["price"])
 
-        if signal == "BUY":
-            return Order("BUY", price, 1)
-
-        elif signal == "SELL":
-            return Order("SELL", price, 1)
-
-        return None
+        return Order(
+            side=signal,
+            price=price,
+            quantity=1,
+            timestamp=event.timestamp
+        )
