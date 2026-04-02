@@ -324,6 +324,42 @@ These results highlight that while the system is functionally correct and
 operationally efficient, the current trading strategy does not produce 
 profitable outcomes under the tested conditions.
 
+\section{Analysis and Discussion}
+
+The results of the simulation provide important insights into the interaction 
+between trading strategy design and system architecture.
+
+First, the low average latency confirms that the event-driven architecture 
+is effective for processing high-frequency market data streams. The use of 
+a priority queue with deterministic ordering ensures that events are handled 
+correctly while maintaining performance efficiency.
+
+However, despite strong system performance, the trading strategy itself 
+produced negative returns. This outcome suggests that simple momentum-based 
+strategies are insufficient in realistic market environments, where price 
+movements are noisy and highly competitive.
+
+The results also highlight the importance of execution modeling. The inclusion 
+of probabilistic fills introduces a more realistic representation of market 
+conditions, where not all orders are executed immediately. This significantly 
+impacts profitability and demonstrates that execution assumptions play a 
+critical role in evaluating trading strategies.
+
+Additionally, the system currently does not incorporate transaction costs, 
+slippage, or market impact, all of which would likely further reduce 
+profitability. This aligns with findings in the literature that emphasize 
+the gap between theoretical performance and real-world trading outcomes.
+
+A key limitation of the current implementation is the simplicity of the 
+strategy and the absence of richer predictive features. Future work could 
+explore machine learning-based signals, order book depth analysis, and 
+multi-asset strategies to improve performance.
+
+Overall, the findings reinforce the central argument of this project: 
+predictive accuracy alone is not sufficient. The ability to execute trades 
+efficiently within a low-latency system is equally important in determining 
+success in algorithmic trading.
+
 \bibliographystyle{acm}
 \bibliography{bibliography.bib}
 
