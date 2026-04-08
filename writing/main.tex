@@ -375,6 +375,26 @@ infrastructure, the implemented momentum-based strategy produced negative
 returns, highlighting the difficulty of achieving profitability in realistic 
 market environments.
 
+A key contribution of this work is the emphasis on the interaction between 
+prediction and execution. Much of the existing literature focuses on improving 
+predictive accuracy, often assuming idealized trading conditions. In contrast, 
+this project shows that system-level factors such as latency, event ordering, 
+and execution modeling play an equally important role in determining outcomes.
+
+Several limitations should be acknowledged. The execution engine uses a 
+simplified probabilistic matching model and does not fully capture order 
+book depth, transaction costs, or market impact. Additionally, the trading 
+strategy is intentionally basic and does not incorporate advanced predictive 
+techniques such as machine learning models or multi-factor signals.
+
+Future work will focus on improving both the realism and sophistication of 
+the system. This includes integrating machine learning-based prediction 
+models, enhancing the execution engine to simulate more detailed market 
+microstructure, and incorporating transaction costs and slippage. Further 
+optimization of system performance will also be explored to better understand 
+the tradeoffs between computational complexity and latency.
+
+
 \bibliographystyle{acm}
 \bibliography{bibliography.bib}
 
