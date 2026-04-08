@@ -47,7 +47,7 @@ def main():
         orderbook.update_market(price)
 
         # strategy signal
-        signal = strategy.on_market_update(event)
+        signal = strategy.on_market_update(event, portfolio)
 
         if signal:
 

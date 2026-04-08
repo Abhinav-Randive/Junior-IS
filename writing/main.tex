@@ -360,7 +360,20 @@ predictive accuracy alone is not sufficient. The ability to execute trades
 efficiently within a low-latency system is equally important in determining 
 success in algorithmic trading.
 
-/section{Conclusion}
+\section{Conclusion}
+This project presented the design and implementation of an event-driven 
+trading simulation framework for analyzing architectural tradeoffs in 
+low-latency algorithmic trading systems. By integrating market data replay, 
+signal generation, order execution, and latency measurement into a unified 
+pipeline, the system provides a controlled environment for studying how 
+predictive models interact with execution constraints.
+
+The results demonstrate that while the system achieves low processing 
+latency and deterministic event handling, trading performance depends 
+critically on execution dynamics and strategy design. Even with efficient 
+infrastructure, the implemented momentum-based strategy produced negative 
+returns, highlighting the difficulty of achieving profitability in realistic 
+market environments.
 
 \bibliographystyle{acm}
 \bibliography{bibliography.bib}
