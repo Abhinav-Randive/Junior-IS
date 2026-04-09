@@ -6,3 +6,5 @@ class Fill:
     price: float
     quantity: int
     timestamp: int
+    order_id: int = 0
+    fee: float = 0.0

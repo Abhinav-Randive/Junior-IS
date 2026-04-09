@@ -41,10 +41,16 @@ def main():
         # logger.log_event(event)  # optional
 
         price = float(event.payload["price"])
+        quantity = int(float(event.payload.get("quantity", 1)))
         last_price = price
 
         # update market state
-        orderbook.update_market(price)
+        orderbook.update_market(price, quantity)
+
+        # queued orders can fill as fresh market liquidity arrives
+        queued_fills = execution_engine.process_market()
+        for fill in queued_fills:
+            portfolio.update(fill, price)
 
         # strategy signal
         signal = strategy.on_market_update(event, portfolio)
