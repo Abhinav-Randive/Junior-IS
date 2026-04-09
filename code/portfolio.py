@@ -16,14 +16,16 @@ class Portfolio:
         return self.position > -self.max_position
 
     def update(self, fill, market_price):
+        trade_value = fill.price * fill.quantity
+        total_cost = trade_value + fill.fee
 
         if fill.side == "BUY" and self.can_buy():
             self.position += fill.quantity
-            self.cash -= fill.price * fill.quantity
+            self.cash -= total_cost
 
         elif fill.side == "SELL" and self.can_sell():
             self.position -= fill.quantity
-            self.cash += fill.price * fill.quantity
+            self.cash += trade_value - fill.fee
 
         self.trades.append(fill)
 

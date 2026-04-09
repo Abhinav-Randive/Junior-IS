@@ -2,6 +2,9 @@ from order import Order
 
 
 class OrderManager:
+    def __init__(self):
+        self._next_order_id = 1
+
     def create_order(self, signal, event):
 
         price = float(event.payload["price"])
@@ -11,9 +14,12 @@ class OrderManager:
         else:
             price *= 1.001   # sell higher
 
-        return Order(
+        order = Order(
             side=signal,
             price=price,
             quantity=1,
-            timestamp=event.timestamp
+            timestamp=event.timestamp,
+            order_id=self._next_order_id,
         )
+        self._next_order_id += 1
+        return order
