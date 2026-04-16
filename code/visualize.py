@@ -35,9 +35,11 @@ def plot_all():
     sell_prices = [trade_prices[i] for i in range(len(trade_x)) if trade_sides[i] == "SELL"]
 
     # --- EQUITY (resampled to event timeline) ---
-    equity_series = [None] * len(x)
+    max_index = max([m["event_index"] for m in metrics], default=0) if metrics else 0
+    equity_series = [None] * max(len(x), max_index + 1)
     for i, m in enumerate(metrics):
-        equity_series[m["event_index"]] = m["value"]
+        if m["event_index"] < len(equity_series):
+            equity_series[m["event_index"]] = m["value"]
 
     # forward fill
     last_val = 0
@@ -50,35 +52,64 @@ def plot_all():
     # =========================
     # 1. PRICE + TRADES
     # =========================
-    plt.figure()
-    plt.plot(x, prices, label="Price")
-    plt.scatter(buy_x, buy_prices, marker='^', label="BUY")
-    plt.scatter(sell_x, sell_prices, marker='v', label="SELL")
-    plt.title("Market + Execution")
+    plt.figure(figsize=(12, 4))
+    plt.plot(x, prices, label="Price", linewidth=2, color='black')
+    
+    if buy_x:
+        plt.scatter(buy_x, buy_prices, marker='^', s=100, color='green', 
+                   label=f"BUY ({len(buy_x)})", zorder=5)
+    if sell_x:
+        plt.scatter(sell_x, sell_prices, marker='v', s=100, color='red', 
+                   label=f"SELL ({len(sell_x)})", zorder=5)
+    
+    plt.title("Market Price + Trade Execution")
     plt.xlabel("Event Index")
+    plt.ylabel("Price")
     plt.legend()
-    plt.grid()
+    plt.grid(True, alpha=0.3)
     plt.show()
 
     # =========================
     # 2. SIGNAL
     # =========================
-    plt.figure()
-    plt.plot(x, signals)
+    plt.figure(figsize=(12, 4))
+    plt.plot(x, signals, linewidth=1)
+    
+    # Color background for positive/negative signals
+    positive_signals = [s if s > 0 else None for s in signals]
+    negative_signals = [s if s < 0 else None for s in signals]
+    
+    plt.fill_between(x, 0, positive_signals, alpha=0.3, color='green', label='Bullish')
+    plt.fill_between(x, 0, negative_signals, alpha=0.3, color='red', label='Bearish')
+    
+    plt.axhline(y=0, color='black', linestyle='-', linewidth=0.5)
+    plt.axhline(y=0.06, color='green', linestyle='--', linewidth=1, alpha=0.5, label='Entry Threshold')
+    plt.axhline(y=-0.06, color='red', linestyle='--', linewidth=1, alpha=0.5)
+    
     plt.title("Signal Strength Over Time")
     plt.xlabel("Event Index")
-    plt.grid()
+    plt.ylabel("Signal Strength")
+    plt.ylim(-1.5, 1.5)
+    plt.legend()
+    plt.grid(True, alpha=0.3)
     plt.show()
 
     # =========================
     # 3. EQUITY (FIXED)
     # =========================
-    plt.figure()
-    plt.plot(x, equity_series)
-    plt.title("Equity Curve (Aligned)")
+    plt.figure(figsize=(12, 4))
+    plt.plot(x, equity_series, linewidth=2, color='blue', label='Portfolio Value')
+    plt.axhline(y=100000, color='green', linestyle='--', linewidth=1, 
+               alpha=0.5, label='Initial Capital')
+    plt.fill_between(x, 100000, equity_series, where=[e >= 100000 for e in equity_series],
+                     alpha=0.2, color='green', label='Profit')
+    plt.fill_between(x, 100000, equity_series, where=[e < 100000 for e in equity_series],
+                     alpha=0.2, color='red', label='Loss')
+    plt.title("Equity Curve (Portfolio Value Over Time)")
     plt.xlabel("Event Index")
-    plt.ylabel("Portfolio Value")
-    plt.grid()
+    plt.ylabel("Portfolio Value ($)")
+    plt.legend()
+    plt.grid(True, alpha=0.3)
     plt.show()
 
 
