@@ -31,6 +31,10 @@ def main():
     execution_engine = ExecutionEngine(orderbook)
     risk_manager = RiskManager()
 
+    debug_log = []
+    event_index = 0  # 🔥 KEY FIX
+
+    # preload events
     while replay.has_events():
         dispatcher.push(replay.next_event())
 
@@ -41,67 +45,92 @@ def main():
     while dispatcher.has_events() and processed < max_events:
 
         event = dispatcher.pop()
-
         latency.start_event()
-
-        # logger.log_event(event)  # optional
 
         price = float(event.payload["price"])
         quantity = int(float(event.payload.get("quantity", 1)))
         last_price = price
 
-        # update market state
+        # =========================
+        # MARKET UPDATE
+        # =========================
         latency.start_stage("market_update")
         orderbook.update_market(price, quantity)
         latency.stop_stage("market_update")
 
-        # queued orders can fill as fresh market liquidity arrives
+        # =========================
+        # QUEUED EXECUTION
+        # =========================
         latency.start_stage("queued_execution")
         queued_fills = execution_engine.process_market()
         latency.stop_stage("queued_execution")
 
         latency.start_stage("portfolio_update")
         for fill in queued_fills:
-            portfolio.update(fill, price)
+            portfolio.update(fill, price, event_index)  
         latency.stop_stage("portfolio_update")
 
-        # strategy signal
+        # =========================
+        # SIGNAL
+        # =========================
         latency.start_stage("signal_generation")
         signal = strategy.on_market_update(event, portfolio)
         latency.stop_stage("signal_generation")
 
+        # =========================
+        # ORDER FLOW
+        # =========================
         if signal:
             latency.start_stage("order_creation")
             order = order_manager.create_order(signal, event)
             latency.stop_stage("order_creation")
 
-            # risk check BEFORE execution
             latency.start_stage("risk_check")
             approved = risk_manager.approve(order, portfolio)
             latency.stop_stage("risk_check")
 
             if approved:
-
                 latency.start_stage("order_execution")
                 fills = execution_engine.execute(order)
                 latency.stop_stage("order_execution")
 
-                # update portfolio with fills
                 latency.start_stage("portfolio_update")
                 for fill in fills:
-                    portfolio.update(fill, price)
+                    portfolio.update(fill, price, event_index)  
                 latency.stop_stage("portfolio_update")
 
-        latency.stop_event()
-        processed += 1
+        # =========================
+        # DEBUG LOG 
+        # =========================
+        debug_log.append({
+            "event_index": event_index,
+            "timestamp": event.timestamp,
+            "price": price,
+            "signal": signal["strength"] if signal else 0,
+            "position": portfolio.position
+        })
 
+        latency.stop_event()
+
+        processed += 1
+        event_index += 1  
+
+    # =========================
+    # OUTPUT
+    # =========================
     latency.summary()
     portfolio.summary()
 
     print("\nFinal Portfolio Value:", portfolio.value(last_price))
-    
+
     with open(equity_path, "wb") as f:
         pickle.dump(portfolio.history, f)
+
+    with open("debug.pkl", "wb") as f:
+        pickle.dump(debug_log, f)
+
+    with open("metrics.pkl", "wb") as f:
+        pickle.dump(portfolio.metrics, f)
 
 
 if __name__ == "__main__":
