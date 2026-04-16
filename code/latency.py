@@ -17,11 +17,6 @@ By breaking down latency by stage, we can quantify:
 - Execution latency (infrastructure overhead)
 - Risk checking latency (controls vs. speed tradeoff)
 - Total latency impact on trading signal timing
-
-Q&A Answers:
-Q: "Why measure latency?"
-A: "Latency creates stale signals. By measuring when signals arrive vs. execution,
-   we can quantify the competitive disadvantage of each architectural choice."
 """
 
 import time
