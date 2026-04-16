@@ -1,29 +1,29 @@
 class Portfolio:
 
-    def __init__(self, max_position=10):
+    def __init__(self, max_position=10, starting_capital=100000):
         self.position = 0
-        self.cash = 0
+        self.cash = starting_capital
         self.max_position = max_position
 
         self.history = []
         self.trades = []
         self.metrics = []
 
-    def can_buy(self):
-        return self.position < self.max_position
+    def can_buy(self, quantity=1):
+        return (self.position + quantity <= self.max_position) and (self.cash >= 0)
 
-    def can_sell(self):
-        return self.position > -self.max_position
+    def can_sell(self, quantity=1):
+        return (self.position >= quantity) and (self.position - quantity >= -self.max_position)
 
     def update(self, fill, market_price, event_index):  # 🔥 NEW ARG
         trade_value = fill.price * fill.quantity
         total_cost = trade_value + fill.fee
 
-        if fill.side == "BUY" and self.can_buy():
+        if fill.side == "BUY" and self.can_buy(fill.quantity):
             self.position += fill.quantity
             self.cash -= total_cost
 
-        elif fill.side == "SELL" and self.can_sell():
+        elif fill.side == "SELL" and self.can_sell(fill.quantity):
             self.position -= fill.quantity
             self.cash += trade_value - fill.fee
 
