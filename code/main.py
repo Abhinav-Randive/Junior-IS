@@ -60,6 +60,8 @@ def main():
     base_dir = Path(__file__).resolve().parent
     data_path = base_dir / "data" / "sp500.csv"
     equity_path = base_dir / "equity.pkl"
+    debug_path = base_dir / "debug.pkl"
+    metrics_path = base_dir / "metrics.pkl"
 
     # Market Data and Event Processing
     replay = MarketReplay(str(data_path))  # Loads historical market data
@@ -217,7 +219,7 @@ def main():
     # Includes: returns, Sharpe ratio, drawdown, win rate, trade metrics
     analyzer = ResultsAnalyzer(portfolio, latency, last_price, initial_capital=100000)
     analyzer.print_report()
-    analyzer.save_report_json("results_report.json")
+    analyzer.save_report_json(str(base_dir / "results_report.json"))
 
     # Analyze execution quality (slippage, fill rates, queue positions)
     exec_analyzer = ExecutionAnalyzer(portfolio, None)
@@ -230,10 +232,10 @@ def main():
     with open(equity_path, "wb") as f:
         pickle.dump(portfolio.history, f)
 
-    with open("debug.pkl", "wb") as f:
+    with open(debug_path, "wb") as f:
         pickle.dump(debug_log, f)
 
-    with open("metrics.pkl", "wb") as f:
+    with open(metrics_path, "wb") as f:
         pickle.dump(portfolio.metrics, f)
 
 

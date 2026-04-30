@@ -198,7 +198,7 @@ class BaselineSignalModel:
         try:
             probability_up = 1.0 / (1.0 + exp(-linear_score))
         except (OverflowError, ValueError):
-            probability_up = 0.5 if linear_score < 0 else 0.5
+            probability_up = 0.0 if linear_score < 0 else 1.0
 
         signal_strength = (probability_up - 0.5) * 2.0
 

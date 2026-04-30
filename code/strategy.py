@@ -8,7 +8,7 @@ Key Features:
 - Dynamic entry thresholds (configurable: default 0.06)
 - Automatic stop-loss protection (default 2%)
 - Take-profit targets (default 5%)
-- One-directional position management
+- Long-only entries (SELL closes longs; new shorts are not opened)
 - Exit rules to reduce latency impact
 
 Architecture Decision:
@@ -175,8 +175,8 @@ class PredictionStrategy:
                 "prob_up": prediction["prob_up"],
             }
 
-        # SELL signal: Strong negative momentum + no short position
-        if signal_strength <= -self.entry_threshold and portfolio.position >= 0:
+        # SELL signal: strong negative momentum while holding a long (long-only book)
+        if signal_strength <= -self.entry_threshold and portfolio.position > 0:
             self.entry_price = market_price  # Record entry point for SL/TP
             self.current_side = "SELL"
             return {
