@@ -22,6 +22,9 @@ Financial markets have increasingly become dominated by automated trading system
 These systems rely on algorithmic strategies that analyze market data and react within milliseconds or even microseconds. 
 As a result, the design of trading infrastructure has become just as important as the predictive models used to generate trading signals. 
 Even when predictive models are accurate, delays in processing or order execution can eliminate any potential advantage in highly competitive markets.
+Real-time financial data systems can process very high message volumes, and stream-processing
+work in computer systems reports workloads on the order of millions of events per second in
+latency-sensitive settings~\cite{stonebrakerLatency}.
 
 Recent advances in machine learning have led to significant interest in applying predictive models to financial markets. 
 Researchers have explored techniques ranging from classical statistical models to deep learning architectures for forecasting stock price movements. 
@@ -60,9 +63,9 @@ According to Aldridge, high-frequency trading firms routinely invest heavily in 
 These trading systems monitor and process incoming market data and update trading decisions in real time in microseconds. 
 The performance of such systems depends not only on the accuracy of prediction models but also on the efficiency of event processing, memory access, and network communication.
 
-Cartea et al.~\cite{carteaMicrostructure} further emphasizes that successful algorithmic trading strategies must always account for both predictive signaling (BUY/SELL/HOLD) and market impact. 
-Trades can influence market prices, and poorly designed strategies may result from terrible selection, where informed traders exploit predictable behavior. 
-As a result, realistic simulation environments must inlcude all aspects of market microstructure when evaluating a given trading algorithm.
+Cartea et al.~\cite{carteaMicrostructure} further emphasize that successful algorithmic trading strategies must account for both predictive signaling (BUY/SELL/HOLD) and market impact. 
+Trades can influence market prices, and poorly designed strategies may suffer from adverse selection, where informed traders exploit predictable behavior. 
+As a result, realistic simulation environments should include the main aspects of market microstructure when evaluating a trading algorithm.
 
 \section{Related Work}
 
@@ -83,13 +86,13 @@ capable of capturing complex temporal patterns in financial data.
 Fischer and Krauss demonstrate that Long Short-Term Memory (LSTM) 
 neural networks can outperform traditional machine learning models 
 when predicting stock market returns using historical price data 
-\cite{fischer2018lstm}. Their results highlight the ability of deep 
+~\cite{fischer2018lstm}. Their results highlight the ability of deep 
 learning models to capture long-term dependencies in financial time 
 series that may not be easily identified by classical statistical 
 techniques.
 
 Similarly, Gu, Kelly, and Xiu conduct a comprehensive empirical study 
-of machine learning methods applied to asset pricing \cite{gu2020empirical}. 
+of machine learning methods applied to asset pricing~\cite{gu2020empirical}. 
 Their research evaluates a wide range of algorithms, including neural 
 networks and tree-based models, using a large set of financial predictors. 
 The authors find that machine learning approaches can improve predictive 
@@ -113,7 +116,7 @@ markets. Modern electronic exchanges operate using limit order books,
 where buy and sell orders are matched according to price-time priority.
 
 Bouchaud, Farmer, and Lillo analyze how markets absorb changes in supply 
-and demand over time \cite{bouchaudTrades}. Their work demonstrates that 
+and demand over time~\cite{bouchaudTrades}. Their work demonstrates that 
 price dynamics emerge from the interaction of orders within the limit 
 order book rather than purely from external information shocks. This 
 perspective highlights the importance of understanding liquidity and 
@@ -168,18 +171,11 @@ trading signals, and simulates order execution under realistic constraints.
 
 Historical market data is obtained using the \texttt{yfinance} API, which 
 provides minute-level price and volume data for the S\&P 500 index. The 
-data is preprocessed to ensure consistency and usability.
-
-The preprocessing pipeline includes:
-\begin{itemize}
-    \item Flattening multi-index columns
-    \item Selecting relevant fields (timestamp, price, volume)
-    \item Converting timestamps to Unix time format
-    \item Exporting cleaned data to CSV
-\end{itemize}
-
-This ensures reproducibility and provides a structured input for the 
-simulation system.
+data is preprocessed to ensure consistency and usability. Specifically, the
+pipeline flattens multi-index columns, selects timestamp/price/volume fields,
+converts timestamps into Unix time, and exports a cleaned CSV that is consumed
+by the replay engine. This workflow provides reproducible, structured input for
+all experiments.
 
 \subsection{Event-Driven Architecture}
 
@@ -202,12 +198,26 @@ performance metrics are not influenced by future information.
 
 \subsection{Trading Strategy}
 
-A simple rule-based trading strategy is implemented to generate BUY and 
-SELL signals based on short-term price movements.
+The strategy layer combines a rolling-window technical indicator model 
+(momentum, volatility, volume, RSI, Bollinger bands, and MACD) with a 
+logistic-style mapping to a directional score. Entry and exit rules 
+implement stop-loss and take-profit thresholds; new short positions are 
+not opened so that the portfolio stays long-only while still allowing 
+\texttt{SELL} orders to close long positions.
 
-Although basic, this strategy provides a controlled environment for 
+Although still relatively lightweight, this design separates signal 
+computation from decision logic and provides a controlled environment for 
 evaluating how system latency affects the ability to act on predictive 
 signals.
+
+At each market update, the model computes a directional signal 
+strength in the interval \([-1, 1]\). A BUY entry is triggered when the 
+signal strength is greater than or equal to the configured entry threshold 
+and the portfolio is not already long. A SELL action is triggered to close 
+an existing long position when the signal strength is less than or equal to 
+the negative threshold, or when stop-loss / take-profit exit conditions are 
+met. In the current implementation, the strategy is long-only for new entries 
+(i.e., SELL is used to exit longs rather than open new short positions).
 
 \subsection{System Design Tradeoffs}
 
@@ -261,24 +271,29 @@ a trading strategy can be effectively deployed in practice.
 
 \section{Implementation}
 
+This section describes how the conceptual pipeline is realized in software and
+how each component contributes to deterministic processing, execution realism,
+and measurable system behavior.
+
 \subsection{System Architecture}
 
-The system is composed of modular components that interact through an 
-event-driven pipeline:
+The system is composed of modular components that interact through an
+event-driven pipeline. The replay engine streams historical data into the
+dispatcher, which preserves chronological processing order. The strategy module
+produces signals that are transformed into orders by the order manager, then
+routed to the execution engine and limit order book for fill simulation under
+spread/liquidity constraints. Portfolio and latency-tracking modules record
+financial outcomes and performance metrics at each stage. This modular design
+allows individual components to be modified and 
+evaluated independently. The measured relationship between added strategy
+logic and latency overhead is summarized in Fig.~\ref{fig:complexity-latency}.
 
-\begin{itemize}
-    \item \textbf{Replay Engine:} Streams historical market data
-    \item \textbf{Event Dispatcher:} Maintains a priority queue of events
-    \item \textbf{Strategy:} Generates trading signals
-    \item \textbf{Order Manager:} Converts signals into orders
-    \item \textbf{Execution Engine:} Simulates trade execution
-    \item \textbf{Limit Order Book:} Maintains order queues and matching
-    \item \textbf{Portfolio:} Tracks positions and profit/loss
-    \item \textbf{Latency Tracker:} Measures processing time
-\end{itemize}
-
-This modular design allows individual components to be modified and 
-evaluated independently.
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.9\textwidth]{../code/visualizations/04_complexity_tradeoff.png}
+\caption{Measured tradeoff between strategy complexity and end-to-end processing latency in the event-driven simulator.}
+\label{fig:complexity-latency}
+\end{figure}
 
 \subsection{Order Execution Model}
 
@@ -292,44 +307,53 @@ behavior, where execution depends on queue position and market liquidity.
 \subsection{Latency Measurement}
 
 Latency is measured at the event-processing level. For each event, the 
-system records the time required to:
-
-\begin{itemize}
-    \item Process market data
-    \item Generate trading signals
-    \item Execute orders
-\end{itemize}
-
-This enables quantitative evaluation of how architectural decisions 
-impact system performance.
+system records stage-level timing for market updates, signal generation, and
+order execution, along with end-to-end event latency. This enables quantitative
+evaluation of how architectural decisions affect overall system performance and
+which stages dominate runtime.
 
 \section{Results}
 
 The system was evaluated using historical S\&P 500 data at one-minute 
 intervals. A total of approximately 1,800 events were processed during 
-a typical simulation run.
+a typical simulation run. Stage-level latency behavior is shown in
+Fig.~\ref{fig:latency-impact}.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.9\textwidth]{../code/visualizations/03_latency_impact_analysis.png}
+\caption{Per-stage latency contribution analysis for the instrumented trading pipeline.}
+\label{fig:latency-impact}
+\end{figure}
 
 Latency measurements indicate that the system operates efficiently under 
-the current configuration. The average processing latency per event was 
-approximately 0.04 milliseconds, with a maximum observed latency of 
-12.4 milliseconds. These results demonstrate that the system is capable 
-of processing market data in near real-time under simulated conditions.
+the current configuration. In a representative run, the average processing 
+latency per event was 0.0102 milliseconds, with a maximum observed latency 
+of 0.0593 milliseconds and p99 latency of 0.0203 milliseconds. These 
+results demonstrate that the system can process market data in near real-time 
+under the simulated conditions.
 
-From a trading perspective, the strategy generated frequent BUY and SELL 
-signals based on short-term price fluctuations. The final portfolio state 
-after simulation showed a small net position and a negative cash balance, 
-resulting in an overall negative portfolio value.
+From a trading perspective, the strategy generated BUY and SELL decisions 
+throughout the run, but only a small number of trades were executed 
+(8 fills total). The final portfolio value was \$101,247.09 from an initial 
+\$100,000, corresponding to a total return of +1.25\%.
 
-These results highlight that while the system is functionally correct and 
-operationally efficient, the current trading strategy does not produce 
-profitable outcomes under the tested conditions.
+These results indicate that the system is functionally correct and 
+operationally efficient, and that profitability is possible in the tested 
+configuration. However, because the trade count is low, performance metrics 
+should be interpreted cautiously. The return-versus-cost tradeoff across
+tested configurations is shown in Fig.~\ref{fig:efficiency-frontier}.
 
-These findings indicate that while the system is capable of operating 
-efficiently in a simulated real-time environment, achieving profitability 
-requires more sophisticated strategies and more realistic modeling of 
-execution dynamics. The results emphasize that infrastructure alone is 
-not sufficient; strategy design and market interaction must also be 
-carefully considered.
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.9\textwidth]{../code/visualizations/05_efficiency_frontier.png}
+\caption{Efficiency frontier illustrating the relationship between portfolio performance and execution-related costs.}
+\label{fig:efficiency-frontier}
+\end{figure}
+
+The measured outputs indicate that the current configuration is operationally
+stable, with low latency and a modest positive return in the representative
+run, while still exhibiting low trade frequency.
 
 \section{Analysis and Discussion}
 
@@ -341,10 +365,11 @@ is effective for processing high-frequency market data streams. The use of
 a priority queue with deterministic ordering ensures that events are handled 
 correctly while maintaining performance efficiency.
 
-However, despite strong system performance, the trading strategy itself 
-produced negative returns. This outcome suggests that simple momentum-based 
-strategies are insufficient in realistic market environments, where price 
-movements are noisy and highly competitive.
+In this configuration, the strategy produced a small positive return, but 
+the low number of fills makes the estimate noisy. This suggests that simple 
+technical-indicator rules can be directionally useful, but they remain 
+fragile in noisy markets once execution frictions and fill uncertainty are 
+included.
 
 The results also highlight the importance of execution modeling. The inclusion 
 of probabilistic fills introduces a more realistic representation of market 
@@ -352,15 +377,27 @@ conditions, where not all orders are executed immediately. This significantly
 impacts profitability and demonstrates that execution assumptions play a 
 critical role in evaluating trading strategies.
 
-Additionally, the system currently does not incorporate transaction costs, 
-slippage, or market impact, all of which would likely further reduce 
-profitability. This aligns with findings in the literature that emphasize 
-the gap between theoretical performance and real-world trading outcomes.
+To answer the core strategy question explicitly: BUY decisions occur when the 
+model confidence exceeds the positive entry threshold, while SELL decisions 
+occur when confidence crosses the negative threshold against an open long or 
+when risk exits (stop-loss/take-profit) are triggered. This rule-based mapping 
+from model output to actions makes the strategy behavior transparent and 
+reproducible.
+
+The execution path also applies commission, slippage, and a simple market 
+impact estimate on fills. These costs reduce net performance compared with 
+a frictionless benchmark and align with the literature on gaps between 
+theoretical signals and realized trading outcomes.
 
 A key limitation of the current implementation is the simplicity of the 
 strategy and the absence of richer predictive features. Future work could 
 explore machine learning-based signals, order book depth analysis, and 
 multi-asset strategies to improve performance.
+
+Another limitation is metric robustness under small samples. For example, 
+risk-adjusted and execution-quality summaries (such as Sharpe ratio and 
+slippage proxies) can become unstable when only a few trades occur, so those 
+figures should be treated as diagnostic rather than definitive.
 
 Overall, the findings reinforce the central argument of this project: 
 predictive accuracy alone is not sufficient. The ability to execute trades 
@@ -384,10 +421,10 @@ predictive models interact with execution constraints.
 
 The results demonstrate that while the system achieves low processing 
 latency and deterministic event handling, trading performance depends 
-critically on execution dynamics and strategy design. Even with efficient 
-infrastructure, the implemented momentum-based strategy produced negative 
-returns, highlighting the difficulty of achieving profitability in realistic 
-market environments.
+critically on execution dynamics and strategy design. In the current test, 
+the indicator-driven strategy produced a modest positive return (+1.25\%), 
+but with limited trade frequency, highlighting the difficulty of drawing 
+strong conclusions about profitability in realistic market environments.
 
 A key contribution of this work is the emphasis on the interaction between 
 prediction and execution. Much of the existing literature focuses on improving 
@@ -396,17 +433,15 @@ this project shows that system-level factors such as latency, event ordering,
 and execution modeling play an equally important role in determining outcomes.
 
 Several limitations should be acknowledged. The execution engine uses a 
-simplified probabilistic matching model and does not fully capture order 
-book depth, transaction costs, or market impact. Additionally, the trading 
-strategy is intentionally basic and does not incorporate advanced predictive 
-techniques such as machine learning models or multi-factor signals.
+simplified probabilistic matching model and does not fully capture full order 
+book depth, cancellations, or venue-specific fee schedules. The signal model 
+remains intentionally lightweight compared with modern machine learning 
+approaches or rich multi-factor inputs.
 
-Future work will focus on improving both the realism and sophistication of 
-the system. This includes integrating machine learning-based prediction 
-models, enhancing the execution engine to simulate more detailed market 
-microstructure, and incorporating transaction costs and slippage. Further 
-optimization of system performance will also be explored to better understand 
-the tradeoffs between computational complexity and latency.
+Future work could deepen microstructure realism (explicit price levels, 
+cancellations, and calibrated liquidity), expand prediction with trained 
+models under latency budgets, and study tail latency under higher event 
+throughput.
 
 
 \bibliographystyle{acm}

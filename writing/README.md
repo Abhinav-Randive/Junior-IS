@@ -1,6 +1,6 @@
 # Architecture Tradeoffs in Low-Latency Algorithmic Trading
-A brief description.
 
+Written thesis sources (`main.tex`, `proposal.tex`, bibliography). Compile with `latexmk -pdf main.tex` from this folder.
 
 ## Feature Calendar
 
@@ -15,7 +15,7 @@ A brief description.
 | [Baseline predictive model](https://github.com/Abhinav-Randive/Junior-IS/issues/7#issue-3929599639) (logistic regression)| Week 5 | First prediction integration |
 | [Strategy model using predictions](https://github.com/Abhinav-Randive/Junior-IS/issues/8#issue-3929601119) | Week 6 | Prediction-informed decisions |
 | Latency instrumentation and logging | Week 7 | Measure component delays |
-| Visiualisation of latency distributions and execution metrics | Week 8 | Plotting for analysis
+| Visualisation of latency distributions and execution metrics | Week 8 | Plotting for analysis |
 | Prediction Accuracy vs Latency | Week 9 | Main Question |
 | Final Documentation | Week 10 | Results (Hopefully!!!!) |
 
